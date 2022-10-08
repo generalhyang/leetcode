@@ -24,8 +24,8 @@ Data structure related<br />
 -graph<br />
 -bit operation<br />
 
-Below is the header format of a solution file.<br />
-// [index of leetcode program]. [name of leetcode problem]<br />
+Below is the header format of my leetcode solution file.<br />
+// [index of leetcode problem]. [name of leetcode problem]<br />
 // [link of the leetcode problem]<br />
 
 for example,<br />
