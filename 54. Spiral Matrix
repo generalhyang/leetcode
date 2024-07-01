@@ -1,0 +1,58 @@
+54. Spiral Matrix
+https://leetcode.com/problems/spiral-matrix
+
+class Solution {
+    private static int DIRECTION_NUM = 4;
+    private static int[][] DIRECTIONS = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}}; // (x, y)
+    
+    public List<Integer> spiralOrder(int[][] matrix) {
+        List<Integer> spiralList = new ArrayList<Integer>();
+        int height = matrix.length;
+        int width = matrix[0].length;
+
+        int[][] visitedMatrix = new int[height][];
+        for (int y = 0; y < height; ++y) {
+            visitedMatrix[y] = new int[width];
+            Arrays.fill(visitedMatrix[y], 0);
+        }
+
+        int directionIndex = 0;
+        int x = -1;
+        int y = 0;
+        
+        while ((directionIndex = directionOfNextStep(visitedMatrix, x, y, directionIndex)) >= 0) {
+            int[] direction = DIRECTIONS[directionIndex];
+            System.out.print(String.format("move in direction (%d, %d)\n", direction[0], direction[1]));
+            x = x + direction[0];
+            y = y + direction[1];
+            spiralList.add(matrix[y][x]);
+            visitedMatrix[y][x] = 1;
+            System.out.print(String.format("visited (%d, %d)\n", x, y));
+        }
+        
+        return spiralList;
+    }
+
+
+    private int directionOfNextStep(int[][] visitedMatrix, int x0, int y0, int directionIndex) {
+        int height = visitedMatrix.length;
+        int width = visitedMatrix[0].length;
+
+        for (int turn = 0; turn < DIRECTION_NUM; ++turn) {
+            int currentDirectionIndex = directionIndex + turn;
+            if (currentDirectionIndex >= DIRECTION_NUM) {
+                currentDirectionIndex = currentDirectionIndex % DIRECTION_NUM;
+            }
+            
+            int[] currectDirection = DIRECTIONS[currentDirectionIndex];
+            int x = x0 + currectDirection[0];
+            int y = y0 + currectDirection[1];
+            
+            if ((x >= 0) && (x < width) && (y >= 0) && (y < height) && visitedMatrix[y][x] == 0) {
+                return currentDirectionIndex;
+            }
+        }
+        
+        return -1;
+    }
+}
