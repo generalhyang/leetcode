@@ -1,0 +1,97 @@
+// 56. Merge Intervals
+
+class Interval {
+    private int start = Integer.MAX_VALUE;
+    private int end = Integer.MAX_VALUE;
+    
+    public Interval() {
+        this.start = Integer.MAX_VALUE;
+        this.end = Integer.MAX_VALUE;
+    }
+    
+    public Interval(int start, int end) {
+        this.start = start;
+        this.end = end;
+    }
+    
+    public Interval(int[] interval) {
+        this.start = interval[0];
+        this.end = interval[1];
+    }
+    
+    
+    public int getStart() {
+        return this.start;
+    }
+    
+    public int getEnd() {
+        return this.end;
+    }
+    
+    public int[] get() {
+        return new int[] {this.start, this.end};
+    }
+};
+
+class IntervalComparator implements java.util.Comparator<Interval> {
+    @Override
+    public int compare(Interval a, Interval b) {
+        return a.getStart() - b.getStart();
+    }
+}
+
+public class Solution {
+    public int[][] merge(int[][] intervals) {
+        List<Interval> sortedIntervalList = new ArrayList<Interval>();
+        for (int i = 0; i < intervals.length; ++i) {
+            int start = Math.min(intervals[i][0], intervals[i][1]);
+            int end = Math.max(intervals[i][0], intervals[i][1]);
+            sortedIntervalList.add(new Interval(start, end));
+        }
+        
+        Collections.sort(sortedIntervalList, new IntervalComparator());
+        List<Interval> mergedIntervalList = new ArrayList<Interval>();
+        Interval mergedInterval = new Interval();
+        
+        for (Interval interval : sortedIntervalList) {
+            if ((mergedInterval.getStart() == Integer.MAX_VALUE) && (mergedInterval.getEnd() == Integer.MAX_VALUE)) {
+                mergedInterval = new Interval(interval.getStart(), interval.getEnd());
+            } else if (mergedInterval.getEnd() >= interval.getStart()) {
+                mergedInterval = new Interval(mergedInterval.getStart(), Math.max(mergedInterval.getEnd(), interval.getEnd()));
+            } else {
+                mergedIntervalList.add(mergedInterval);
+                mergedInterval = new Interval(interval.getStart(), interval.getEnd());
+            }
+        }
+        
+        if ((mergedInterval.getStart() != Integer.MAX_VALUE) || (mergedInterval.getEnd() != Integer.MAX_VALUE)) {
+            mergedIntervalList.add(mergedInterval);
+        }
+        
+        int[][] mergedIntervals = new int[mergedIntervalList.size()][];
+        for (int i = 0; i < mergedIntervalList.size(); ++i) {
+            Interval interval = mergedIntervalList.get(i);
+            mergedIntervals[i] = interval.get();
+        }
+        
+        return mergedIntervals;
+    }
+    
+    public static void mergeTest(int[][] intervals) {
+        int[][] mergedIntervals = new Solution().merge(intervals);
+        for (int i = 0; i < mergedIntervals.length; ++i) {
+            System.out.print(String.format("[%d, %d] ", mergedIntervals[i][0], mergedIntervals[i][1]));
+        }
+        System.out.println("");
+    }
+    
+    
+    public static void main(String[] args) {
+        int[][] intervals = {{1,3},{2,6},{8,10},{15,18}};
+        mergeTest(intervals);
+        
+        int[][] intervals2 = {{1,4},{4,5}};
+        mergeTest(intervals2);
+    }
+
+}
